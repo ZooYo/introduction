@@ -10,7 +10,17 @@ window.INTRO_CONTENTS.en = {
     role: "Senior Backend Engineer",
     pageTitle: "Luke Hsiao | Introduction",
   },
-  labels: { problem: "Problem", solution: "Solution", result: "Outcome" },
+  labels: {
+    problem: "Problem", solution: "Solution", result: "Outcome",
+    minutes: "min", seconds: "s",
+    pickerBtn: "Projects", pickerTitle: "Choose the projects to present",
+    pickerHint: "Tick and reorder; the deck updates instantly. Your choice is remembered and written into the URL, so you can keep one link per company.",
+    pickerTotal: "Selected", pickerReset: "Reset to default", pickerCopy: "Copy this link", pickerCopied: "Copied ✓",
+  },
+  // Default projects and order (change any time with the "Projects" button)
+  defaultProjects: ["project-a", "project-b", "project-c"],
+  // Minutes for intro + closing, used for the time estimate
+  baseMinutes: 2,
 
   slides: [
     // ---------------------------------------------------------- 1. Cover
@@ -29,7 +39,7 @@ window.INTRO_CONTENTS.en = {
       facts: [
         { k: "Now", v: "Pacston · Backend lead, online immigration document platform" },
         { k: "Experience", v: "5+ years backend (Pacston, MaideaX)" },
-        { k: "Today", v: "1 current project + 2 highlight projects, about 8 minutes" },
+        { k: "Today", v: "{count} projects, within 5–10 minutes" },
       ],
     },
 
@@ -38,7 +48,7 @@ window.INTRO_CONTENTS.en = {
       id: "about",
       type: "about",
       navLabel: "About me",
-      eyebrow: "01 · About me",
+      eyebrow: "About me",
       title: "I build backend systems from zero to stable.",
       summary:
         "I mainly build web backend services in Python with FastAPI, Chalice and AWS serverless. I'm strongest at asynchronous data processing, database design and performance tuning, and I'm used to talking directly with PMs, end users and client attorneys.",
@@ -69,8 +79,9 @@ window.INTRO_CONTENTS.en = {
     {
       id: "project-a",
       type: "project",
+      minutes: 3,
       navLabel: "Project A · Immigration platform",
-      eyebrow: "02 · Current project",
+      eyebrow: "Current project",
       period: "2025.03 – now",
       role: "Sole backend owner (1 PM, 1 frontend, 1 backend, AI team joined later)",
       title: "Online Immigration Package Platform",
@@ -109,8 +120,9 @@ window.INTRO_CONTENTS.en = {
     {
       id: "project-b",
       type: "project",
+      minutes: 2,
       navLabel: "Project B · 240M records",
-      eyebrow: "03 · Highlight project",
+      eyebrow: "Highlight project",
       period: "2023 – 2024",
       role: "Academic document platform · backend",
       title: "Importing and parsing 240M academic records",
@@ -147,8 +159,9 @@ window.INTRO_CONTENTS.en = {
     {
       id: "project-c",
       type: "project",
+      minutes: 1.5,
       navLabel: "Project C · Internal chat",
-      eyebrow: "04 · Highlight project",
+      eyebrow: "Highlight project",
       period: "2023 – 2024",
       role: "Database design & API development",
       title: "Internal real-time chat application",
@@ -180,12 +193,200 @@ window.INTRO_CONTENTS.en = {
       ],
     },
 
+
+    // ---------------------------------------------------------- Project D (optional)
+    {
+      id: "project-d",
+      type: "project",
+      minutes: 1.5,
+      navLabel: "Project D · Zero-downtime deploys",
+      eyebrow: "Highlight project",
+      period: "2020 – 2022",
+      role: "MaideaX · backend / deployment",
+      title: "Zero-downtime Docker deployments",
+      tagline: "Turned manual, downtime-required releases of a third-party payment site into a one-command, zero-downtime update with auto-renewing SSL.",
+      pickerNote: "Docker, CI/CD mindset, operations; good for DevOps-minded companies",
+      tech: ["Docker", "docker-compose", "Nginx", "certbot", "Shell", "EC2"],
+      problem: [
+        "Every release of the payment site required downtime and many manual, error-prone steps.",
+        "SSL renewal depended on someone remembering; expiry was a real risk.",
+        "No CI tooling, so the deployment process could not be verified ahead of time.",
+      ],
+      solution: [
+        { label: "Containerize:", text: "packaged the service, Nginx and config with docker-compose for consistent versions and environments." },
+        { label: "One-command update:", text: "a script on the deploy host runs the pipeline: pull the new image → start a new container → health check → switch traffic → remove the old one." },
+        { label: "Auto-renew certificates:", text: "a certbot cron job renews and reloads Nginx." },
+        { label: "Rehearse first:", text: "simulated the whole pipeline in a Docker-based Linux sandbox before touching production." },
+      ],
+      stat: { num: "0", label: "seconds of downtime per release" },
+      result: [
+        "Production updates no longer interrupt service; deployment became a single command.",
+        "Built an internal sandbox environment for partners to test integrations.",
+        "Delivered the spirit of CI/CD without CI tooling: repeatable, verifiable, reversible.",
+      ],
+      flow: [
+        { label: "git push" },
+        { label: "build image" },
+        { label: "pull on host", sub: "one command", hl: true },
+        { label: "new container", sub: "health check" },
+        { label: "switch traffic", sub: "Nginx", hl: true },
+        { label: "remove old" },
+      ],
+    },
+
+    // ---------------------------------------------------------- Project E (optional)
+    {
+      id: "project-e",
+      type: "project",
+      minutes: 1.5,
+      navLabel: "Project E · AI support classifier",
+      eyebrow: "Highlight project",
+      period: "2024",
+      role: "Academic document platform · backend",
+      title: "AI customer-inquiry classifier",
+      tagline: "Used the OpenAI API to classify support conversations and summarize the key points, so hand-offs between agents no longer required re-reading the whole thread.",
+      pickerNote: "LLM application, prompt design, cost trade-offs; good for AI-related roles",
+      tech: ["Python", "OpenAI API", "Prompt Design", "JSON Output", "Chrome Extension"],
+      problem: [
+        "Support conversations changed hands; the next agent struggled to follow earlier context, and response time grew.",
+        "Many inquiry types made manual routing to the right team error-prone.",
+      ],
+      solution: [
+        { label: "Capture:", text: "a Chrome extension pulls the conversation from the support system." },
+        { label: "Prompt design:", text: "the model must answer in a fixed JSON shape: category, key sentences, suggested route, so code can parse it." },
+        { label: "Validate & route:", text: "schema-validate the result, then route to the matching support team." },
+        { label: "Cost control:", text: "after measuring cost, rolled it out to new agents only, where it adds the most value." },
+      ],
+      stat: { num: "83%", label: "routing accuracy" },
+      result: [
+        "Support handling time **down 57%**; new agents could take over quickly.",
+        "Lesson for shipping LLMs: structured output, a validation layer, and honesty about API cost.",
+      ],
+      flow: [
+        { label: "Conversation" },
+        { label: "Chrome extension" },
+        { label: "OpenAI API", sub: "JSON prompt", hl: true },
+        { label: "Validate", sub: "schema" },
+        { label: "Route to team", hl: true },
+      ],
+    },
+
+    // ---------------------------------------------------------- Project F (optional)
+    {
+      id: "project-f",
+      type: "project",
+      minutes: 1.5,
+      navLabel: "Project F · Automated data sync",
+      eyebrow: "Highlight project",
+      period: "2024",
+      role: "Academic document platform · backend",
+      title: "Automated OpenAlex data sync",
+      tagline: "Replaced a quarterly manual refresh with a daily pipeline that checks, downloads, parses and reports on its own.",
+      pickerNote: "Scheduling, automation, data pipelines; good for data-heavy products",
+      tech: ["Python", "AWS Lambda", "EventBridge", "S3", "MySQL"],
+      problem: [
+        "OpenAlex data was re-synced by hand every quarter: slow and easy to miss updates.",
+        "Large volumes caused timeouts, and failures went unnoticed.",
+      ],
+      solution: [
+        { label: "Follow the official manifest:", text: "an EventBridge schedule runs daily and diffs the manifest to find updated files." },
+        { label: "Process per file:", text: "download, parse and load one file at a time; failed files are logged and retried." },
+        { label: "Observable:", text: "every run emits logs and a summary notification, so anomalies surface immediately." },
+      ],
+      stat: { num: "-89%", label: "manual sync effort" },
+      result: [
+        "Data went from \"once a quarter\" to \"fresh every day\" with nobody watching it.",
+        "Complements the 240M-record import: bulk load first, then continuous incremental sync.",
+      ],
+      flow: [
+        { label: "EventBridge", sub: "daily" },
+        { label: "manifest diff", sub: "S3 polling", hl: true },
+        { label: "download / parse" },
+        { label: "MySQL" },
+        { label: "log + notify", hl: true },
+      ],
+    },
+
+    // ---------------------------------------------------------- Project G (optional)
+    {
+      id: "project-g",
+      type: "project",
+      minutes: 1.5,
+      navLabel: "Project G · Plagiarism detection",
+      eyebrow: "Highlight project",
+      period: "2024",
+      role: "Academic document platform · backend",
+      title: "Document plagiarism detection",
+      tagline: "Designed matching logic that tolerates light rewording and marks the exact copied spans, to stop contract writers from plagiarizing.",
+      pickerNote: "Algorithms and data structures in practice; good for algorithm-heavy interviews",
+      tech: ["Python", "Sliding Window", "Interval Merge", "Counter"],
+      problem: [
+        "The client needed to detect whether contract writers copied existing documents, but copies were lightly reworded, so exact matching missed them.",
+        "Copied spans had to be highlighted on the original text, yet tokenized word indexes drifted from character positions.",
+        "A minimum-steps (edit distance) approach was too slow and didn't match the requirement.",
+      ],
+      solution: [
+        { label: "Sliding window + Counter:", text: "compare word frequencies per window and allow a tolerance ratio, catching \"a few words changed\" copies." },
+        { label: "Interval merge:", text: "turn matching windows into intervals and merge overlaps for clean highlighted ranges." },
+        { label: "Offset correction:", text: "track special-character counts in a list to map word indexes back to character positions." },
+      ],
+      result: [
+        "Results matched the client's expectations and raised trust in the writers' output.",
+        "Lesson: translating the requirement into the right data structure matters more than applying a textbook algorithm.",
+      ],
+      flow: [
+        { label: "Source / candidate" },
+        { label: "tokenize", sub: "track offsets" },
+        { label: "Sliding window", sub: "Counter tolerance", hl: true },
+        { label: "Interval merge", hl: true },
+        { label: "highlight output" },
+      ],
+    },
+
+    // ---------------------------------------------------------- Project H (optional)
+    {
+      id: "project-h",
+      type: "project",
+      minutes: 1.5,
+      navLabel: "Project H · Monitoring & logging",
+      eyebrow: "Highlight project",
+      period: "2024 – 2025",
+      role: "Pacston · backend",
+      title: "Monitoring, logging and alerting",
+      tagline: "Moved logs out of the database and off the servers, so nobody needs SSH to look, and problems announce themselves.",
+      pickerNote: "Observability and operational maturity; good for reliability-focused teams",
+      tech: ["FastAPI Middleware", "AWS CloudWatch", "GoAccess", "Nginx", "EventBridge", "Telegram Bot"],
+      problem: [
+        "Access logs lived in MySQL and slowed the main database; reading logs meant SSH-ing into machines.",
+        "Traffic anomalies and errors were noticed by customers before engineers.",
+      ],
+      solution: [
+        { label: "Centralize:", text: "a FastAPI middleware ships each request's context to CloudWatch; the database no longer stores logs." },
+        { label: "Visualize:", text: "GoAccess renders Nginx logs into periodic reports, so traffic trends are obvious at a glance." },
+        { label: "Alert:", text: "EventBridge counts requests hourly and alerts on anomalies; a Telegram bot pushes stack traces for errors in real time." },
+        { label: "Rescue stuck jobs:", text: "a sweeper resets records stuck in Processing so workers pick them up again." },
+      ],
+      stat: { num: "-77%", label: "manual log inspection" },
+      result: [
+        "Problems are caught before customers report them; a bad deploy can be rolled back immediately.",
+        "Now pushing for a correlation ID so one document's whole lifecycle can be traced with a single query.",
+      ],
+      flow: [
+        { label: "Request" },
+        { label: "Middleware", sub: "FastAPI", hl: true },
+        { label: "CloudWatch", sub: "central logs" },
+        { label: "GoAccess", sub: "Nginx reports" },
+        { label: "EventBridge", sub: "hourly counts" },
+        { label: "Telegram alert", hl: true },
+      ],
+    },
+
     // ---------------------------------------------------------- 6. Closing
     {
       id: "closing",
       type: "closing",
       navLabel: "Closing",
-      eyebrow: "05 · Wrap-up",
+      eyebrow: "Wrap-up",
       title: "Thank you. Happy to take questions.",
       lead: "I enjoy solving problems and I care about clear communication. I'd like to bring my experience in document automation and reliable systems to the next team.",
       points: [

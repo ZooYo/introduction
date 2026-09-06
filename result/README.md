@@ -14,8 +14,10 @@
 
 直接用瀏覽器打開 `index.html` 即可（雙擊或拖進 Chrome）。
 
-操作：`→` / `←` / 空白鍵切換頁面，`1`–`6` 跳到指定頁，`F` 全螢幕，`L` 切換語言，`D` 切換深色 / 淺色（右上角也有按鈕）。
-語言與主題的選擇會記在瀏覽器裡；網址也可以直接指定：`?lang=en`、`?theme=dark`。
+操作：右上角「專案」鈕（或 `P`）可勾選、排序要講的專案，並複製對應的連結。`→` / `←` / 空白鍵切換頁面，`1`–`6` 跳到指定頁，`F` 全螢幕，`L` 切換語言，`D` 切換深色 / 淺色（右上角也有按鈕）。
+語言、主題與專案選擇都會記在瀏覽器裡；網址也可以直接指定：`?lang=en`、`?theme=dark`、`?projects=project-a,project-d`。
+
+**依公司準備不同版本**：在「專案」面板勾好順序後按「複製這組連結」，把連結存成書籤（例如「A 公司版」），面試時直接開那個連結即可。
 
 ## 改內容
 
@@ -23,10 +25,10 @@
 
 - `type: "cover"`：封面
 - `type: "about"`：關於我（`stats`、`highlights`、`timeline`、`skills`）
-- `type: "project"`：專案頁（`problem` / `solution` / `result` / `flow` / `stat`）
+- `type: "project"`：專案頁（`problem` / `solution` / `result` / `flow` / `stat` / `minutes` 預估分鐘 / `pickerNote` 面板上的一句說明）
 - `type: "closing"`：結尾
 
-文字裡可以用 `**粗體**` 和 `` `程式碼` ``。要多加一個專案，複製一個 `type: "project"` 的物件貼在後面、改 `id` 即可，導覽點和頁碼會自動更新。
+文字裡可以用 `**粗體**` 和 `` `程式碼` ``。要多加一個專案，複製一個 `type: "project"` 的物件貼在後面、改 `id` 即可，它會出現在「專案」面板供勾選；`defaultProjects` 決定預設勾選哪些。頁碼、編號與導覽點都會自動更新。
 
 ## 部署到 GitHub Pages
 

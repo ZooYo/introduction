@@ -259,3 +259,42 @@ body.embed .cover .hint { display: none; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
+
+/* ---------- Project picker ---------- */
+#pickerBtn .count { background: var(--accent); color: #fff; border-radius: 999px; font-size: 11px; font-weight: 700; padding: 1px 7px; margin-left: 2px; }
+#pickerBtn.active { border-color: var(--accent); color: var(--accent); }
+.picker-backdrop { position: fixed; inset: 0; z-index: 40; background: rgba(15, 23, 42, .35); }
+.picker {
+  position: fixed; top: 58px; right: 18px; z-index: 41; width: min(560px, calc(100vw - 36px));
+  max-height: calc(100vh - 80px); display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 16px 48px rgba(0, 0, 0, .25);
+  font-size: 14px;
+}
+.picker .muted { color: var(--text-3); font-size: 12.5px; }
+.picker .spacer { flex: 1; }
+.picker-hd { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 14px 16px 10px; border-bottom: 1px solid var(--line); }
+.picker-hd b { font-size: 15px; }
+.picker-list { overflow: auto; padding: 6px 8px; display: flex; flex-direction: column; gap: 2px; }
+.picker-row {
+  display: grid; grid-template-columns: 18px 22px 1fr auto auto; gap: 10px; align-items: center;
+  padding: 9px 10px; border-radius: 10px; cursor: pointer; border: 1px solid transparent;
+}
+.picker-row:hover { background: var(--surface-2); }
+.picker-row.on { border-color: var(--accent-soft); }
+.picker-row input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; }
+.picker-row .pos { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+.picker-row:not(.on) .pos { background: transparent; }
+.picker-row .txt { min-width: 0; }
+.picker-row .txt b { display: block; font-weight: 650; }
+.picker-row .txt span { display: block; color: var(--text-3); font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.picker-row .mins { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); white-space: nowrap; }
+.picker-row .ord { display: inline-flex; gap: 2px; }
+.picker-row .mv { border: 1px solid var(--line); background: var(--surface); color: var(--text-2); border-radius: 6px; width: 24px; height: 24px; font: inherit; font-size: 12px; cursor: pointer; }
+.picker-row .mv:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.picker-row .mv:disabled { opacity: .3; cursor: default; }
+.picker-ft { display: flex; align-items: center; gap: 8px; padding: 10px 16px 12px; border-top: 1px solid var(--line); }
+@media (max-width: 640px) {
+  .picker-row { grid-template-columns: 18px 1fr auto; }
+  .picker-row .pos, .picker-row .mins { display: none; }
+}
+.picker[hidden], .picker-backdrop[hidden] { display: none; }

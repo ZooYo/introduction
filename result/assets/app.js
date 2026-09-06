@@ -1,11 +1,17 @@
 /* ------------------------------------------------------------
    Renders window.INTRO_CONTENTS[lang] (see ../content/zh.js, en.js)
-   into a keyboard-navigable slide deck with language + theme toggles.
+   into a keyboard-navigable slide deck with language / theme toggles
+   and a project picker (choose + order which project slides to show).
 
    You normally never need to edit this file. Change the text in
    content/*.js instead.
 
-   URL options:  ?lang=en|zh   ?theme=dark|light   ?embed=1   #slide-id
+   URL options:
+     ?lang=en|zh          language
+     ?theme=dark|light    theme
+     ?projects=a,b,c      which project slides to show, in order
+     ?embed=1             compact chrome (used by self_prepare)
+     #slide-id            start slide
    ------------------------------------------------------------ */
 (function () {
   "use strict";
@@ -47,9 +53,30 @@
   applyTheme(theme, false);
   mq.addEventListener?.("change", (e) => { if (!store.get("intro.theme") && !params.get("theme")) applyTheme(e.matches ? "dark" : "light", false); });
 
+  // ---------- project selection (ordered list of project slide ids) ----------
+  const allProjectIds = () => ALL[lang].slides.filter((s) => s.type === "project").map((s) => s.id);
+  let selected = null;
+  function loadSelection() {
+    const valid = allProjectIds();
+    let ids = null;
+    const q = params.get("projects");
+    if (q !== null) ids = q.split(",").map((s) => s.trim()).filter(Boolean);
+    else { try { ids = JSON.parse(store.get("intro.projects") || "null"); } catch (e) { ids = null; } }
+    if (!Array.isArray(ids)) ids = ALL[lang].defaultProjects || valid.slice(0, 3);
+    selected = ids.filter((id) => valid.includes(id));
+  }
+  function saveSelection() {
+    store.set("intro.projects", JSON.stringify(selected));
+    const p = new URLSearchParams(location.search);
+    if (JSON.stringify(selected) === JSON.stringify(ALL[lang].defaultProjects || [])) p.delete("projects");
+    else p.set("projects", selected.join(","));
+    const qs = p.toString();
+    history.replaceState(null, "", `${location.pathname}${qs ? "?" + qs : ""}${location.hash}`);
+  }
+
   // ---------- helpers ----------
   const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-  const md = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/`(.+?)`/g, "<code>$1</code>");
+  const md = (s) => esc(s).replace(/\{count\}/g, String(selected ? selected.length : 0)).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/`(.+?)`/g, "<code>$1</code>");
   const list = (items, cls = "list") => `<ul class="${cls}">${(items || []).map((i) => `<li>${md(i)}</li>`).join("")}</ul>`;
   const steps = (items) => `<ol class="steps">${(items || []).map((s) => `<li><span>${s.label ? `<b>${md(s.label)}</b> ` : ""}${md(s.text)}</span></li>`).join("")}</ol>`;
   const chips = (items, cls = "") => `<div class="chips">${(items || []).map((c) => `<span class="chip ${cls}">${md(c)}</span>`).join("")}</div>`;
@@ -57,8 +84,10 @@
     const node = typeof n === "string" ? { label: n } : n;
     return (i ? `<span class="arrow">→</span>` : "") + `<span class="node ${node.hl ? "hl" : ""}">${md(node.label)}${node.sub ? `<small>${md(node.sub)}</small>` : ""}</span>`;
   }).join("")}</div>`;
+  const num2 = (n) => String(n).padStart(2, "0");
+  const fmtMin = (m) => { const C = ALL[lang]; const L = C.labels; return m >= 1 ? `${Math.round(m * 10) / 10} ${L.minutes}` : `${Math.round(m * 60)} ${L.seconds}`; };
 
-  // ---------- slide renderers ----------
+  // ---------- slide renderers (n = section number shown in the eyebrow) ----------
   const R = {
     cover(s, C) {
       const m = C.meta;
@@ -80,9 +109,9 @@
         </div>`;
     },
 
-    about(s) {
+    about(s, C, n) {
       return `
-        <div class="eyebrow">${md(s.eyebrow || "")}</div>
+        <div class="eyebrow">${num2(n)} · ${md(s.eyebrow || "")}</div>
         <h2>${md(s.title)}</h2>
         <p class="lead">${md(s.summary)}</p>
         <div class="stat-row">
@@ -104,11 +133,11 @@
         </div>`;
     },
 
-    project(s, C) {
+    project(s, C, n) {
       const L = C.labels;
       return `
         <div class="eyebrow">
-          <span>${md(s.eyebrow)}</span>
+          <span>${num2(n)} · ${md(s.eyebrow)}</span>
           ${s.period ? `<span class="sep">·</span><span class="muted">${md(s.period)}</span>` : ""}
           ${s.role ? `<span class="sep">·</span><span class="muted">${md(s.role)}</span>` : ""}
         </div>
@@ -128,10 +157,10 @@
         ${s.footnote ? `<p class="footnote">${md(s.footnote)}</p>` : ""}`;
     },
 
-    closing(s) {
+    closing(s, C, n) {
       return `
         <div class="closing">
-          <div class="eyebrow">${md(s.eyebrow || "")}</div>
+          <div class="eyebrow">${num2(n)} · ${md(s.eyebrow || "")}</div>
           <p class="big">${md(s.title)}</p>
           <p class="lead">${md(s.lead || "")}</p>
           <div class="grid-3">
@@ -142,35 +171,145 @@
     },
   };
 
+  // ---------- project picker panel ----------
+  function pickerHTML(C) {
+    const L = C.labels;
+    const byId = Object.fromEntries(C.slides.map((s) => [s.id, s]));
+    const rows = [...selected, ...allProjectIds().filter((id) => !selected.includes(id))];
+    const total = (C.baseMinutes || 2) + selected.reduce((a, id) => a + (byId[id].minutes || 0), 0);
+    return `
+      <div class="picker-hd">
+        <div><b>${esc(L.pickerTitle)}</b><div class="muted">${esc(L.pickerHint)}</div></div>
+        <button class="btn icon" id="pickerClose" title="Close (Esc)">✕</button>
+      </div>
+      <div class="picker-list">
+        ${rows.map((id) => {
+          const s = byId[id], on = selected.includes(id), pos = selected.indexOf(id);
+          return `
+            <label class="picker-row ${on ? "on" : ""}" data-id="${esc(id)}">
+              <input type="checkbox" ${on ? "checked" : ""}>
+              <span class="pos">${on ? pos + 1 : ""}</span>
+              <span class="txt"><b>${md(s.title)}</b><span>${md(s.pickerNote || s.tagline)}</span></span>
+              <span class="mins">${s.minutes ? fmtMin(s.minutes) : ""}</span>
+              <span class="ord">
+                <button class="mv" data-dir="-1" title="↑" ${!on || pos === 0 ? "disabled" : ""}>↑</button>
+                <button class="mv" data-dir="1" title="↓" ${!on || pos === selected.length - 1 ? "disabled" : ""}>↓</button>
+              </span>
+            </label>`;
+        }).join("")}
+      </div>
+      <div class="picker-ft">
+        <span class="muted">${esc(L.pickerTotal)} <b>${selected.length}</b> · ≈ <b>${fmtMin(total)}</b></span>
+        <span class="spacer"></span>
+        <button class="btn" id="pickerReset">${esc(L.pickerReset)}</button>
+        <button class="btn primary" id="pickerCopy">${esc(L.pickerCopy)}</button>
+      </div>`;
+  }
+
+  let pickerOpen = false;
+  function renderPicker() {
+    const el = document.getElementById("picker");
+    if (!el) return;
+    el.innerHTML = pickerHTML(ALL[lang]);
+    el.querySelectorAll(".picker-row").forEach((row) => {
+      const id = row.dataset.id;
+      row.querySelector("input").addEventListener("change", (e) => {
+        if (e.target.checked) { if (!selected.includes(id)) selected.push(id); }
+        else selected = selected.filter((x) => x !== id);
+        commitSelection();
+      });
+      row.querySelectorAll(".mv").forEach((b) => b.addEventListener("click", (e) => {
+        e.preventDefault(); e.stopPropagation();
+        const i = selected.indexOf(id), j = i + Number(b.dataset.dir);
+        if (i < 0 || j < 0 || j >= selected.length) return;
+        [selected[i], selected[j]] = [selected[j], selected[i]];
+        commitSelection();
+      }));
+    });
+    document.getElementById("pickerClose").addEventListener("click", () => togglePicker(false));
+    document.getElementById("pickerReset").addEventListener("click", () => { selected = (ALL[lang].defaultProjects || allProjectIds().slice(0, 3)).slice(); commitSelection(); });
+    document.getElementById("pickerCopy").addEventListener("click", copyLink);
+  }
+  function commitSelection() {
+    saveSelection();
+    render(true);
+    renderPicker();
+  }
+  function togglePicker(open) {
+    pickerOpen = typeof open === "boolean" ? open : !pickerOpen;
+    document.getElementById("picker").hidden = !pickerOpen;
+    document.getElementById("pickerBackdrop").hidden = !pickerOpen;
+    document.getElementById("pickerBtn")?.classList.toggle("active", pickerOpen);
+    if (pickerOpen) renderPicker();
+  }
+  function shareUrl() {
+    const u = new URL(location.href);
+    u.searchParams.set("lang", lang);
+    u.searchParams.set("projects", selected.join(","));
+    u.searchParams.delete("embed");
+    u.hash = "";
+    return u.toString();
+  }
+  async function copyLink() {
+    const L = ALL[lang].labels, url = shareUrl(), b = document.getElementById("pickerCopy");
+    try { await navigator.clipboard.writeText(url); b.textContent = L.pickerCopied; }
+    catch (e) { window.prompt(L.pickerCopy, url); }
+    setTimeout(() => { if (b.isConnected) b.textContent = L.pickerCopy; }, 1500);
+  }
+
   // ---------- state ----------
   const app = document.getElementById("app");
   let C, slides, deck, sections, dots, counter, progress, io;
   let current = 0;
 
+  function visibleSlides(C) {
+    const byId = Object.fromEntries(C.slides.map((s) => [s.id, s]));
+    const out = [];
+    for (const s of C.slides) {
+      if (s.type === "project") continue;
+      out.push(s);
+    }
+    // insert selected projects (in chosen order) before the closing slide
+    const closingIdx = out.findIndex((s) => s.type === "closing");
+    const projects = selected.map((id) => byId[id]).filter(Boolean);
+    if (closingIdx < 0) out.push(...projects); else out.splice(closingIdx, 0, ...projects);
+    return out;
+  }
+
   function render(keepIndex) {
     C = ALL[lang];
-    slides = C.slides;
+    if (!selected) loadSelection();
+    const prevId = keepIndex && slides ? slides[Math.min(current, slides.length - 1)]?.id : null;
+    slides = visibleSlides(C);
     document.title = C.meta.pageTitle || C.meta.name;
     document.documentElement.lang = C.lang || lang;
     const otherLang = LANGS.find((l) => l !== lang);
+    const L = C.labels;
     if (io) io.disconnect();
 
+    let n = 0; // section number for the eyebrow (cover excluded)
     app.innerHTML = `
       <div class="progress" id="progress"></div>
       <header class="topbar">
         <div class="brand"><span class="dot"></span>${md(C.meta.name)} <span class="sub">· ${md(C.meta.role)}</span></div>
         <div class="tools">
           <span class="counter" id="counter">1 / ${slides.length}</span>
+          <button class="btn" id="pickerBtn" title="${esc(L.pickerTitle)} (P)">${esc(L.pickerBtn)} <span class="count">${selected.length}</span></button>
           ${otherLang ? `<button class="btn lang" id="langBtn" title="Language (L)">${esc(LANG_LABEL[otherLang] || otherLang)}</button>` : ""}
           <button class="btn icon" id="themeBtn" title="Theme (D)"></button>
           <button class="btn icon" id="fs" title="Fullscreen (F)">⛶</button>
         </div>
       </header>
+      <div class="picker-backdrop" id="pickerBackdrop" hidden></div>
+      <aside class="picker" id="picker" hidden></aside>
       <nav class="dots" id="dots">
         ${slides.map((s, i) => `<a href="#${esc(s.id)}" data-i="${i}"><span>${esc(s.navLabel || s.title || s.id)}</span></a>`).join("")}
       </nav>
       <main class="deck" id="deck">
-        ${slides.map((s, i) => `<section class="slide" id="${esc(s.id)}" data-i="${i}"><div class="slide-inner">${(R[s.type] || R.project)(s, C)}</div></section>`).join("")}
+        ${slides.map((s, i) => {
+          if (s.type !== "cover") n += 1;
+          return `<section class="slide" id="${esc(s.id)}" data-i="${i}"><div class="slide-inner">${(R[s.type] || R.project)(s, C, n)}</div></section>`;
+        }).join("")}
       </main>`;
 
     deck = document.getElementById("deck");
@@ -189,19 +328,32 @@
     dots.forEach((d) => d.addEventListener("click", (e) => { e.preventDefault(); goTo(Number(d.dataset.i)); }));
     document.getElementById("fs").addEventListener("click", toggleFullscreen);
     document.getElementById("themeBtn").addEventListener("click", () => applyTheme(theme === "dark" ? "light" : "dark", true));
+    document.getElementById("pickerBtn").addEventListener("click", () => togglePicker());
+    document.getElementById("pickerBackdrop").addEventListener("click", () => togglePicker(false));
     const lb = document.getElementById("langBtn");
     if (lb) lb.addEventListener("click", () => setLang(otherLang));
+    if (pickerOpen) togglePicker(true);
 
-    const startId = keepIndex ? slides[Math.min(current, slides.length - 1)]?.id : location.hash.replace("#", "");
+    const startId = prevId ?? location.hash.replace("#", "");
     const startIdx = Math.max(0, slides.findIndex((s) => s.id === startId));
     current = -1;
     if (startIdx > 0) goTo(startIdx, "auto"); else setCurrent(0, { silent: true });
+    announceSlides();
+  }
+
+  function announceSlides() {
+    if (window.parent === window) return;
+    window.parent.postMessage({
+      type: "intro:slides", lang, theme,
+      slides: slides.map((s) => ({ id: s.id, label: s.navLabel || s.title || s.id, type: s.type, minutes: s.minutes || null })),
+    }, "*");
   }
 
   function setLang(l, persist = true) {
     if (!ALL[l] || l === lang) return;
     lang = l;
     if (persist) store.set("intro.lang", l);
+    selected = selected.filter((id) => allProjectIds().includes(id));
     render(true);
   }
 
@@ -231,6 +383,8 @@
 
   document.addEventListener("keydown", (e) => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === "Escape" && pickerOpen) { togglePicker(false); return; }
+    if (pickerOpen && e.target.closest?.("#picker")) return;
     switch (e.key) {
       case "ArrowRight": case "ArrowDown": case "PageDown": case " ":
         e.preventDefault(); goTo(current + 1); break;
@@ -240,6 +394,7 @@
       case "End": e.preventDefault(); goTo(slides.length - 1); break;
       case "f": case "F": toggleFullscreen(); break;
       case "d": case "D": applyTheme(theme === "dark" ? "light" : "dark", true); break;
+      case "p": case "P": togglePicker(); break;
       case "l": case "L": { const o = LANGS.find((l) => l !== lang); if (o) setLang(o); break; }
       default: if (/^[1-9]$/.test(e.key)) goTo(Number(e.key) - 1);
     }
@@ -255,7 +410,7 @@
     else if (m.type === "intro:prev") goTo(current - 1);
     else if (m.type === "intro:lang") setLang(m.lang, false);
     else if (m.type === "intro:theme") applyTheme(m.theme, false);
-    else if (m.type === "intro:hello") setCurrent(current, { silent: true });
+    else if (m.type === "intro:hello") { announceSlides(); setCurrent(current, { silent: true }); }
   });
 
   render(false);
