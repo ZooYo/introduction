@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Luke Hsiao | Introduction</title>
+  <meta name="robots" content="noindex">
+  <script>
+    // English entry point: same deck, English selected. Keeps any extra query / hash.
+    var p = new URLSearchParams(location.search); p.set("lang", "en");
+    location.replace("./index.html?" + p.toString() + location.hash);
+  </script>
+</head>
+<body><a href="./index.html?lang=en">English version</a></body>
+</html>

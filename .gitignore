@@ -1,0 +1,9 @@
+# 私人資料，絕對不要推到公開 repo
+notion_data/
+resume/
+self_prepare/
+ins
+
+# 系統檔
+.DS_Store
+Thumbs.db
