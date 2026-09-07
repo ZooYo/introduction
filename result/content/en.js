@@ -51,12 +51,12 @@ window.INTRO_CONTENTS.en = {
       eyebrow: "About me",
       title: "Software engineer with 5+ years of experience",
       summary:
-        "I mainly build web backend services in Python with FastAPI, Chalice and AWS serverless. I'm strongest at asynchronous data processing, database design and performance tuning, and I'm used to talking directly with PMs, end users and client attorneys.",
+        "I mainly build web backend services in Python with FastAPI, and serverless services on AWS Lambda with Chalice. I'm strongest at asynchronous data processing, database design and performance tuning, and I'm used to talking directly with PMs, end users and client attorneys.",
       highlights: [
         { icon: "01", title: "Document automation", text: "End-to-end pipeline for PDF extraction, classification, validation and auto-fill, with a human-in-the-loop safety net." },
         { icon: "02", title: "Scale & async processing", text: "Lambda, EventBridge, state machines and idempotent workers for hundred-million-row datasets and batch syncs." },
         { icon: "03", title: "Database design & tuning", text: "Schema, indexes and partitioning; profiling to find real bottlenecks and fix N+1 queries." },
-        { icon: "04", title: "Communication & mentoring", text: "Onboarded juniors to ship independently within 12 weeks; replace open-ended questions with concrete options." },
+        { icon: "04", title: "Communication & mentoring", text: "Replace open-ended questions with concrete options to cut back-and-forth; onboarded juniors to ship independently within 12 weeks." },
       ],
       timelineTitle: "Experience",
       timeline: [

@@ -51,12 +51,12 @@ window.INTRO_CONTENTS.zh = {
       eyebrow: "關於我",
       title: "5+ 年經驗的軟體工程師",
       summary:
-        "主要用 Python 開發 Web 後端服務，熟悉 FastAPI、Chalice 與 AWS Serverless。擅長非同步資料處理、資料庫設計與效能調校，也習慣直接和 PM、使用者、客戶端律師溝通需求。",
+        "主要用 Python 開發 Web 後端服務，熟悉 FastAPI，也用 Chalice 在 AWS Lambda 上做 serverless 服務。擅長非同步資料處理、資料庫設計與效能調校，也習慣直接和 PM、使用者、客戶端律師溝通需求。",
       highlights: [
         { icon: "01", title: "文件自動化", text: "PDF 抽取、分類、驗證、自動填表的完整 pipeline，搭配 Human-in-the-loop 把關。" },
         { icon: "02", title: "大量資料與非同步處理", text: "Lambda、EventBridge、狀態機與冪等設計，處理過億級資料與批次同步。" },
         { icon: "03", title: "資料庫設計與調校", text: "從 schema、索引到分區設計，實際用 profiling 找瓶頸、解 N+1。" },
-        { icon: "04", title: "溝通與帶人", text: "帶新人 12 週內獨立開發功能；用具體選項取代開放式問題，降低來回成本。" },
+        { icon: "04", title: "溝通與帶人", text: "用具體選項取代開放式問題，降低來回成本；帶新人 12 週內獨立開發功能。" },
       ],
       timelineTitle: "經歷",
       timeline: [
