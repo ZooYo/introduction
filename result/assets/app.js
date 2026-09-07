@@ -114,9 +114,7 @@
         <div class="eyebrow">${num2(n)} · ${md(s.eyebrow || "")}</div>
         <h2>${md(s.title)}</h2>
         <p class="lead">${md(s.summary)}</p>
-        <div class="stat-row">
-          ${(s.stats || []).map((st) => `<div class="card stat"><div class="num">${esc(st.num)}</div><div class="label">${md(st.label)}</div></div>`).join("")}
-        </div>
+        ${(s.stats || []).length ? `<div class="stat-row">${s.stats.map((st) => `<div class="card stat"><div class="num">${esc(st.num)}</div><div class="label">${md(st.label)}</div></div>`).join("")}</div>` : ""}
         <div class="about-grid">
           <div>
             <div class="highlights">
@@ -162,10 +160,8 @@
         <div class="closing">
           <div class="eyebrow">${num2(n)} · ${md(s.eyebrow || "")}</div>
           <p class="big">${md(s.title)}</p>
-          <p class="lead">${md(s.lead || "")}</p>
-          <div class="grid-3">
-            ${(s.points || []).map((p) => `<div class="card"><b>${md(p.title)}</b><span>${md(p.text)}</span></div>`).join("")}
-          </div>
+          ${s.lead ? `<p class="lead">${md(s.lead)}</p>` : ""}
+          ${(s.points || []).length ? `<div class="grid-3">${s.points.map((p) => `<div class="card"><b>${md(p.title)}</b><span>${md(p.text)}</span></div>`).join("")}</div>` : ""}
           <div class="contact">${(s.contact || []).map((c) => `<span>${md(c)}</span>`).join("")}</div>
         </div>`;
     },

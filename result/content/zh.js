@@ -52,12 +52,6 @@ window.INTRO_CONTENTS.zh = {
       title: "從 0 到 1 把後端系統做穩的人",
       summary:
         "主要用 Python 開發 Web 後端服務，熟悉 FastAPI、Chalice 與 AWS Serverless。擅長非同步資料處理、資料庫設計與效能調校，也習慣直接和 PM、使用者、客戶端律師溝通需求。",
-      stats: [
-        { num: "5+", label: "年後端開發經驗" },
-        { num: "240M", label: "筆學術資料處理" },
-        { num: "94%", label: "解析效能提升" },
-        { num: "-64%", label: "文件錯誤與客訴" },
-      ],
       highlights: [
         { icon: "01", title: "文件自動化", text: "PDF 抽取、分類、驗證、自動填表的完整 pipeline，搭配 Human-in-the-loop 把關。" },
         { icon: "02", title: "大量資料與非同步處理", text: "Lambda、EventBridge、狀態機與冪等設計，處理過億級資料與批次同步。" },
@@ -388,12 +382,6 @@ window.INTRO_CONTENTS.zh = {
       navLabel: "結尾",
       eyebrow: "總結",
       title: "謝謝，歡迎提問。",
-      lead: "我是一個樂於解決問題、重視溝通的人。希望能把文件自動化與穩定系統的經驗，帶到下一個團隊。",
-      points: [
-        { title: "務實", text: "先 benchmark、再 profiling，用數據決定架構，而不是追流行。" },
-        { title: "可靠", text: "狀態機、冪等、驗證層、回歸測試，讓系統壞了也能自己復原。" },
-        { title: "溝通", text: "與 PM、律師、前端直接對話，用具體選項與範例取代模糊描述。" },
-      ],
       contact: ["chuyu.hsiao.tw@gmail.com", "Luke Hsiao · 蕭祖佑"],
     },
   ],

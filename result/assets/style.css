@@ -209,7 +209,7 @@ ol.steps li b { color: var(--text); font-weight: 650; }
 .cover .aside .v { font-size: 15px; color: var(--text); font-weight: 550; }
 
 /* about */
-.about-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 18px; align-items: start; }
+.about-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 18px; align-items: start; margin-top: 6px; }
 .timeline { display: flex; flex-direction: column; gap: 0; }
 .timeline .item { display: grid; grid-template-columns: 132px 1fr; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--line); }
 .timeline .item:last-child { border-bottom: 0; }
@@ -230,7 +230,7 @@ ol.steps li b { color: var(--text); font-weight: 650; }
 .closing .grid-3 { grid-template-columns: repeat(3, 1fr); margin-top: 20px; }
 .closing .card b { display: block; margin-bottom: 4px; font-weight: 650; }
 .closing .card span { color: var(--text-2); font-size: 14px; }
-.closing .contact { margin-top: 26px; color: var(--text-2); font-size: 15px; display: flex; gap: 18px; flex-wrap: wrap; }
+.closing .contact { margin-top: 18px; color: var(--text-2); font-size: 15px; display: flex; gap: 18px; flex-wrap: wrap; }
 
 .footnote { margin-top: 16px; font-size: 13px; color: var(--text-3); }
 

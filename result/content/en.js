@@ -52,12 +52,6 @@ window.INTRO_CONTENTS.en = {
       title: "I build backend systems from zero to stable.",
       summary:
         "I mainly build web backend services in Python with FastAPI, Chalice and AWS serverless. I'm strongest at asynchronous data processing, database design and performance tuning, and I'm used to talking directly with PMs, end users and client attorneys.",
-      stats: [
-        { num: "5+", label: "years of backend work" },
-        { num: "240M", label: "academic records processed" },
-        { num: "94%", label: "faster parsing" },
-        { num: "-64%", label: "document errors & complaints" },
-      ],
       highlights: [
         { icon: "01", title: "Document automation", text: "End-to-end pipeline for PDF extraction, classification, validation and auto-fill, with a human-in-the-loop safety net." },
         { icon: "02", title: "Scale & async processing", text: "Lambda, EventBridge, state machines and idempotent workers for hundred-million-row datasets and batch syncs." },
@@ -388,12 +382,6 @@ window.INTRO_CONTENTS.en = {
       navLabel: "Closing",
       eyebrow: "Wrap-up",
       title: "Thank you. Happy to take questions.",
-      lead: "I enjoy solving problems and I care about clear communication. I'd like to bring my experience in document automation and reliable systems to the next team.",
-      points: [
-        { title: "Pragmatic", text: "Benchmark first, profile second; let data pick the architecture, not trends." },
-        { title: "Reliable", text: "State machines, idempotency, validation layers and regression tests so systems recover on their own." },
-        { title: "Communicative", text: "Talk directly with PMs, attorneys and frontend; replace vague descriptions with concrete options and examples." },
-      ],
       contact: ["chuyu.hsiao.tw@gmail.com", "Luke Hsiao · 蕭祖佑"],
     },
   ],
