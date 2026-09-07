@@ -237,6 +237,8 @@ ol.steps li b { color: var(--text); font-weight: 650; }
 /* embed mode (used by the rehearsal page): compact chrome */
 body.embed .topbar .tools .btn.lang { display: none; }
 body.embed .cover .hint { display: none; }
+body.embed .deck { scrollbar-width: none; }
+body.embed .deck::-webkit-scrollbar { display: none; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1024px) {
