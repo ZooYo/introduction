@@ -49,7 +49,7 @@ window.INTRO_CONTENTS.zh = {
       type: "about",
       navLabel: "關於我",
       eyebrow: "關於我",
-      title: "從 0 到 1 把後端系統做穩的人",
+      title: "5+ 年經驗的軟體工程師",
       summary:
         "主要用 Python 開發 Web 後端服務，熟悉 FastAPI、Chalice 與 AWS Serverless。擅長非同步資料處理、資料庫設計與效能調校，也習慣直接和 PM、使用者、客戶端律師溝通需求。",
       highlights: [

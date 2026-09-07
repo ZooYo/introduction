@@ -209,7 +209,7 @@ ol.steps li b { color: var(--text); font-weight: 650; }
 .cover .aside .v { font-size: 15px; color: var(--text); font-weight: 550; }
 
 /* about */
-.about-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 18px; align-items: start; margin-top: 6px; }
+.about-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 18px; align-items: start; margin-top: 6px; }
 .timeline { display: flex; flex-direction: column; gap: 0; }
 .timeline .item { display: grid; grid-template-columns: 132px 1fr; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--line); }
 .timeline .item:last-child { border-bottom: 0; }

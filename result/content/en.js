@@ -49,7 +49,7 @@ window.INTRO_CONTENTS.en = {
       type: "about",
       navLabel: "About me",
       eyebrow: "About me",
-      title: "I build backend systems from zero to stable.",
+      title: "Software engineer with 5+ years of experience",
       summary:
         "I mainly build web backend services in Python with FastAPI, Chalice and AWS serverless. I'm strongest at asynchronous data processing, database design and performance tuning, and I'm used to talking directly with PMs, end users and client attorneys.",
       highlights: [

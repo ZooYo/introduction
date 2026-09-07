@@ -116,17 +116,17 @@
         <p class="lead">${md(s.summary)}</p>
         ${(s.stats || []).length ? `<div class="stat-row">${s.stats.map((st) => `<div class="card stat"><div class="num">${esc(st.num)}</div><div class="label">${md(st.label)}</div></div>`).join("")}</div>` : ""}
         <div class="about-grid">
-          <div>
-            <div class="highlights">
-              ${(s.highlights || []).map((h) => `<div class="hl"><span class="ic">${esc(h.icon || "•")}</span><div><b>${md(h.title)}</b><span>${md(h.text)}</span></div></div>`).join("")}
-            </div>
-            ${s.skills ? `<h3 style="margin-top:16px">${md(s.skillsTitle || "")}</h3>${chips(s.skills)}` : ""}
-          </div>
           <div class="card">
             <h3>${md(s.timelineTitle || "")}</h3>
             <div class="timeline">
               ${(s.timeline || []).map((t) => `<div class="item"><div class="when">${esc(t.when)}</div><div class="what"><b>${md(t.title)}</b><span>${md(t.text)}</span></div></div>`).join("")}
             </div>
+          </div>
+          <div>
+            <div class="highlights">
+              ${(s.highlights || []).map((h) => `<div class="hl"><span class="ic">${esc(h.icon || "•")}</span><div><b>${md(h.title)}</b><span>${md(h.text)}</span></div></div>`).join("")}
+            </div>
+            ${s.skills ? `<h3 style="margin-top:16px">${md(s.skillsTitle || "")}</h3>${chips(s.skills)}` : ""}
           </div>
         </div>`;
     },
